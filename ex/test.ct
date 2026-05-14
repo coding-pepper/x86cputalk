@@ -1,17 +1,17 @@
-write_stdout(msg=rsi, len=rdx) {
+data message db "Hello, world!";
+
+fun write_stdout(msg rsi, len rdx) ret none {
     mov rax, 1;
     mov rdi, 1;
     syscall;
-}
+};
 
-exit(exit_code=rdi) {
+fun exit(exit_code rdi) ret none {
     mov rax, 60;
     syscall;
-}
+};
 
-@_start() {
+pub fun _start() ret none {
     write_stdout(message, 13);
     exit(0);
-}
-
-message = "Hello, world!";
+};

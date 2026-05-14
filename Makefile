@@ -8,7 +8,10 @@ out/exit.o: src/exit.s src/include.s
 out/writef.o: src/writef.s src/include.s
 	nasm -f elf64 $< -o $@
 
-dist/x86cputalk: out/main.o out/writef.o out/exit.o
+out/memcmp.o: src/memcmp.s src/include.s
+	nasm -f elf64 $< -o $@
+
+dist/x86cputalk: out/main.o out/writef.o out/exit.o out/memcmp.o
 	ld $^ -o $@
 
 # targets
