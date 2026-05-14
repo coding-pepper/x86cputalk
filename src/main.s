@@ -8,9 +8,9 @@ extern writef
 
 section .text
     _start:
-        f_writef 1, msg, 14
+        f_writef 1, msg
         f_exit 0
         ret
 
 section .data
-    msg db "Hello, world!", 10
+    msg db "Hello, world!", 10, 0

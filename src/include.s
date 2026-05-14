@@ -7,9 +7,8 @@ STDOUT equ 1
     call exit
 %endmacro
 
-%macro f_writef 3
+%macro f_writef 2
     mov rdi, %1
     mov rsi, %2
-    mov rdx, %3
     call writef
 %endmacro
