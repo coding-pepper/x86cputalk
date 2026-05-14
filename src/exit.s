@@ -4,7 +4,7 @@ bits 64
 global exit
 
 section .text
-exit:
-    mov rax, SYS_EXIT
-    syscall
-    ret
+    exit:
+        mov rax, SYS_EXIT
+        syscall
+        ret
