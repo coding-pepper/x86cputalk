@@ -1,0 +1,17 @@
+write_stdout(msg=rsi, len=rdx) {
+    mov rax, 1;
+    mov rdi, 1;
+    syscall;
+}
+
+exit(exit_code=rdi) {
+    mov rax, 60;
+    syscall;
+}
+
+@_start() {
+    write_stdout(message, 13);
+    exit(0);
+}
+
+message = "Hello, world!";
