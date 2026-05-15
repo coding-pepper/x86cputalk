@@ -8,7 +8,7 @@ extern memcmp
 global writef
 
 section .text
-    ; writef(file_desc=rdi, string=rsi, var_args=stack); bytes_written=rax
+    ; writef(file_desc=rdi, string=rsi, var_args=stack) bytes_written=rax
     writef:
         mov qword [_result], 0
         mov qword [print_segment_address], 0
@@ -49,6 +49,7 @@ section .text
 
             ; print things before %
             mov rax, 1
+            mov rdi, r8
             mov rdx, rsi ; next 4 lines calculate lenght of print into rdx
             push rsi
             mov rsi, [print_segment_address]
@@ -78,6 +79,17 @@ section .text
             sub rdx, rsi
 
             mov r9, rdx
+            cmp r9, 0
+            jne do_format_shit
+                mov rax, 1
+                mov rdi, r8
+                mov rsi, _modulo
+                mov rdx, 1
+                syscall 
+                add qword [_result], rdx
+
+                jmp finish_format
+            do_format_shit:
             f_memcmp qword [print_segment_address], _f_i32, r9, 3
             cmp rax, 0
             jne _not_i32
@@ -97,7 +109,6 @@ section .text
                 mov rsp, r9
 
                 cmp rsi, 0
-                mov r10, 0
                 jg _not_negative
                     push rsi
                     mov rax, 1
@@ -107,9 +118,10 @@ section .text
                     syscall
                     pop rsi
                     neg rsi
+                    add qword [_result], 1
                 _not_negative:
 
-                mov r9, 9
+                mov r9, 38
 
                 mov rax, rsi
                 
@@ -131,9 +143,10 @@ section .text
                 mov rdi, r8
                 mov rsi, _int_any_32_chardigits
                 add rsi, r9
-                mov rdx, 10
+                mov rdx, 39
                 sub rdx, r9
                 syscall
+                add qword [_result], rdx
 
                 jmp finish_format
 
@@ -143,10 +156,52 @@ section .text
             cmp rax, 0
             jne _not_ui32
                 ; if format is ui32
+                mov rax, 0
+                _loop_clean2:
+                    mov byte [_int_any_32_chardigits + rax], 0
+                    inc rax
+                    cmp rax, 10
+                    jne _loop_clean2
+
+                ; retrieve arg into rsi
+                mov r9, rsp
+                mov rsp, rbp
+                pop rsi
+                mov rbp, rsp
+                mov rsp, r9
+
+                mov r9, 38
+
+                mov rax, rsi
+                
+                _fill_chars2:
+                    xor rdx, rdx
+                    mov rbx, 10
+                    div rbx ; rax = rsi / 10 rdx = rsi % 10
+                    add dl, 48
+                    mov byte [_int_any_32_chardigits+r9], dl
+                    cmp rax, 0
+                    je _out_fill_chars2
+                    dec r9
+                    cmp r9, 0
+                    jl _out_fill_chars2
+                    jmp _fill_chars2
+                _out_fill_chars2:
+
+                mov rax, 1
+                mov rdi, r8
+                mov rsi, _int_any_32_chardigits
+                add rsi, r9
+                mov rdx, 39
+                sub rdx, r9
+                syscall
+                add qword [_result], rdx
+
                 jmp finish_format
+
             _not_ui32:
 
-            f_memcmp qword [print_segment_address], _f_s, r9, 1
+            f_memcmp qword [print_segment_address], _f_s, r9, 3
             cmp rax, 0
             jne _not_s
                 ; if format is string
@@ -168,12 +223,36 @@ section .text
                     jmp _loop3
                 _out3:
 
+                add qword [_result], rdx
+
                 mov rax, 1
                 mov rdi, r8
                 syscall
                 jmp finish_format
             _not_s:
 
+            f_memcmp qword [print_segment_address], _f_c, r9, 4
+            cmp rax, 0
+            jne _not_char
+                ; retrieve arg into rsi
+                mov rdx, 0
+                mov r9, rsp
+                mov rsp, rbp
+                pop rsi
+                mov rbp, rsp
+                mov rsp, r9
+
+                mov qword [_char], rsi
+
+                mov rax, 1
+                mov rdi, r8
+                mov rsi, _char
+                mov rdx, 1
+                add qword [_result], rdx
+                syscall
+                jmp finish_format
+
+            _not_char:
             finish_format:
             pop rsi
             pop rdx
@@ -188,6 +267,7 @@ section .text
             mov rdx, rsi
             mov rsi, [print_segment_address]
             sub rdx, rsi
+            mov rdi, r8
             syscall
             add qword [_result], rdx
             mov rax, qword [_result]
@@ -198,6 +278,7 @@ section .text
         _out2:
 
         pop r8
+        mov rax, qword [_result]
         ret
 
 section .data
@@ -207,23 +288,16 @@ section .data
     _parse db 0
 
     _minus db '-'
-    _int_any_32_chardigits db 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    _int_any_32_chardigits:
+        times 39 db 0
 
-    _f_i8 db "i8"
-    _f_i16 db "i16"
-    _f_i32 db "i32"
-    _f_i64 db "i64"
-    _f_i128 db "i128"
+    _f_i32 db "int"
+    _f_ui32 db "uint"
 
-    _f_ui8 db "ui8"
-    _f_ui16 db "ui16"
-    _f_ui32 db "ui32"
-    _f_ui64 db "ui64"
-    _f_ui128 db "ui128"
+    _f_s db "str"
+    _f_c db "char"
+    _f_f db "float"
+    _f_p db "ptr"
 
-    _f_s db "s"
-    _f_c db "c"
-    _f_f db "f"
-    _f_p db "p"
-
-    __dbg db "Ja"
+    _char dq 0
+    _modulo db '%'

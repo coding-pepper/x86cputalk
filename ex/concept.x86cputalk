@@ -1,0 +1,11 @@
+import "concept2.x86cputalk";
+
+define STDOUT 1;
+
+$message
+    db "Hello, world!", 10
+    db "World, hello!", 10, 0;
+
+pub _start() {
+    call writef(STDOUT, message);
+}

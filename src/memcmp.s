@@ -6,7 +6,7 @@ bits 64
 global memcmp
 
 section .text
-    ; memcmp(a=rdi, b=rsi, len_a=rdx, len_b=rcx); difference=rax
+    ; memcmp(a=rdi, b=rsi, len_a=rdx, len_b=rcx) difference=rax
     memcmp:
         mov rax, 0
         cmp rdx, rcx
