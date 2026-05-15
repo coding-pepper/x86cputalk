@@ -9,6 +9,7 @@ STDOUT equ 1
 
 ; writef(file_desc=rdi, string=rsi, var_argc=rdx, var_args=stack); bytes_written=rax
 %macro f_writef 2
+    mov rbp, rsp
     mov rdi, %1
     mov rsi, %2
     call writef
