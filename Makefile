@@ -20,16 +20,7 @@ out/fread.o: src/fread.s src/include.s
 out/brk.o: src/brk.s src/include.s
 	nasm -f elf64 $< -o $@
 
-out/malloc.o: src/malloc.s src/include.s
-	nasm -f elf64 $< -o $@
-
-out/realloc.o: src/realloc.s src/include.s
-	nasm -f elf64 $< -o $@
-
-out/free.o: src/free.s src/include.s
-	nasm -f elf64 $< -o $@
-
-dist/x86cputalk: out/main.o out/writef.o out/exit.o out/memcmp.o out/open.o out/fread.o out/brk.o out/malloc.o out/realloc.o out/free.o
+dist/x86cputalk: out/main.o out/writef.o out/exit.o out/memcmp.o out/open.o out/fread.o out/brk.o
 	ld -nostdlib --build-id=none $^ -o $@
 	strip $@
 
