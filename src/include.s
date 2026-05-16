@@ -59,3 +59,14 @@ STDOUT equ 1
     mov rdi, %1
     call fread
 %endmacro
+
+; brk(address=rdi) (address == 0 ? address_of_brk : status)=rax
+%macro f_brk 1
+    mov rdi, %1
+    call brk
+%endmacro
+
+; get_brk() address_of_brk=rax
+%macro f_get_brk 0
+    call get_brk
+%endmacro

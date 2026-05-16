@@ -7,13 +7,13 @@ global get_brk
 section .text
     ; brk(address=rdi) (address == 0 ? address_of_brk : status)=rax
     brk:
-        mov rax, 12
+        mov rax, SYS_BRK
         syscall
         ret
 
     ; get_brk() address_of_brk=rax
     get_brk:
-        mov rax, 12
+        mov rax, SYS_BRK
         mov rdi, 0
         syscall
         ret
