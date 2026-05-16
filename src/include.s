@@ -1,4 +1,6 @@
 SYS_WRITE equ 1
+SYS_OPEN equ 2
+SYS_BRK equ 12
 SYS_EXIT equ 60
 STDOUT equ 1
 
@@ -50,4 +52,10 @@ STDOUT equ 1
 %macro f_close 1
     mov rdi, %1
     call close
+%endmacro
+
+; fread(file_desc=rdi) pointer_to_file=rax
+%macro f_fread 1
+    mov rdi, %1
+    call fread
 %endmacro

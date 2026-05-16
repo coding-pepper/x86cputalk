@@ -48,7 +48,7 @@ section .text
             jne _got_format
 
             ; print things before %
-            mov rax, 1
+            mov rax, SYS_WRITE
             mov rdi, r8
             mov rdx, rsi ; next 4 lines calculate lenght of print into rdx
             push rsi
@@ -81,7 +81,7 @@ section .text
             mov r9, rdx
             cmp r9, 0
             jne do_format_shit
-                mov rax, 1
+                mov rax, SYS_WRITE
                 mov rdi, r8
                 mov rsi, _modulo
                 mov rdx, 1
@@ -111,7 +111,7 @@ section .text
                 cmp rsi, 0
                 jg _not_negative
                     push rsi
-                    mov rax, 1
+                    mov rax, SYS_WRITE
                     mov rdi, r8
                     mov rsi, _minus
                     mov rdx, 1
@@ -139,7 +139,7 @@ section .text
                     jmp _fill_chars
                 _out_fill_chars:
 
-                mov rax, 1
+                mov rax, SYS_WRITE
                 mov rdi, r8
                 mov rsi, _int_any_32_chardigits
                 add rsi, r9
@@ -188,7 +188,7 @@ section .text
                     jmp _fill_chars2
                 _out_fill_chars2:
 
-                mov rax, 1
+                mov rax, SYS_WRITE
                 mov rdi, r8
                 mov rsi, _int_any_32_chardigits
                 add rsi, r9
@@ -225,7 +225,7 @@ section .text
 
                 add qword [_result], rdx
 
-                mov rax, 1
+                mov rax, SYS_WRITE
                 mov rdi, r8
                 syscall
                 jmp finish_format
@@ -244,7 +244,7 @@ section .text
 
                 mov qword [_char], rsi
 
-                mov rax, 1
+                mov rax, SYS_WRITE
                 mov rdi, r8
                 mov rsi, _char
                 mov rdx, 1
@@ -263,7 +263,7 @@ section .text
 
             jmp _loop2
         _strend:
-            mov rax, 1
+            mov rax, SYS_WRITE
             mov rdx, rsi
             mov rsi, [print_segment_address]
             sub rdx, rsi

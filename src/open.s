@@ -11,7 +11,7 @@ global close
 section .text
     ; open(filename=rdi, flags=rsi, mode=rdx) file_desc=rax
     open:
-        mov rax, 2
+        mov rax, SYS_OPEN
         syscall
         ret
     ; fopen_r(filename=rdi) file_desc=rax
