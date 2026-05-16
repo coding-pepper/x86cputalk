@@ -70,9 +70,3 @@ STDOUT equ 1
 %macro f_get_brk 0
     call get_brk
 %endmacro
-
-; init_malloc(max_entries=rdi) status=rax
-%macro f_init_malloc 1
-    mov rdi, %1
-    call init_malloc
-%endmacro
