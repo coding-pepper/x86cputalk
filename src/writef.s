@@ -98,7 +98,7 @@ section .text
                 _loop_clean:
                     mov byte [_int_any_32_chardigits + rax], 0
                     inc rax
-                    cmp rax, 10
+                    cmp rax, 39
                     jne _loop_clean
 
                 ; retrieve arg into rsi
@@ -160,7 +160,7 @@ section .text
                 _loop_clean2:
                     mov byte [_int_any_32_chardigits + rax], 0
                     inc rax
-                    cmp rax, 10
+                    cmp rax, 39
                     jne _loop_clean2
 
                 ; retrieve arg into rsi
@@ -253,6 +253,71 @@ section .text
                 jmp finish_format
 
             _not_char:
+
+            f_memcmp qword [print_segment_address], _f_p, r9, 3
+            cmp rax, 0
+            jne _not_ptr
+                ; if format is ptr
+                mov rax, 0
+                _loop_clean3:
+                    mov byte [_skibidi_hex_bullshit + rax], 0
+                    inc rax
+                    cmp rax, 16
+                    jne _loop_clean3
+
+                ; retrieve arg into rsi
+                mov r9, rsp
+                mov rsp, rbp
+                pop rsi
+                mov rbp, rsp
+                mov rsp, r9
+
+                mov r9, 15
+
+                mov rax, rsi
+                
+                _fill_chars3:
+                    xor rdx, rdx
+                    mov rbx, 16
+                    div rbx ; rax = rsi / 16 rdx = rsi % 16
+                    cmp dl, 10
+                    jge letter
+                        add dl, 48
+                        jmp not_letter
+                    letter:
+                        add dl, 55
+                    not_letter:
+
+                    mov byte [_skibidi_hex_bullshit+r9], dl
+                    cmp rax, 0
+                    je _out_fill_chars3
+                    dec r9
+                    cmp r9, 0
+                    jl _out_fill_chars3
+                    jmp _fill_chars3
+                _out_fill_chars3:
+
+                mov rax, SYS_WRITE
+                mov rdi, r8
+                mov rsi, _hex
+                mov rdx, 2
+                syscall
+
+                mov rax, SYS_WRITE
+                mov rdi, r8
+                mov rsi, _skibidi_hex_bullshit
+                add rsi, r9
+                mov rdx, 16
+                sub rdx, r9
+                syscall
+
+                add qword [_result], rdx
+                add qword [_result], 2
+
+                jmp finish_format
+
+            _not_ptr:
+
             finish_format:
             pop rsi
             pop rdx
@@ -290,6 +355,8 @@ section .data
     _minus db '-'
     _int_any_32_chardigits:
         times 39 db 0
+    _skibidi_hex_bullshit:
+        times 16 db 0
 
     _f_i32 db "int"
     _f_ui32 db "uint"
@@ -299,5 +366,6 @@ section .data
     _f_f db "float"
     _f_p db "ptr"
 
+    _hex db '0x'
     _char dq 0
     _modulo db '%'

@@ -1,8 +1,0 @@
-import object "writef.o";
-
-pub extrn writef(fd rdi, string rsi, var_args ...) rax;
-
-pub exit(n rdi) {
-    rax = 1;
-    syscall;
-}

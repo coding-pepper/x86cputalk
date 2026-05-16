@@ -1,11 +1,14 @@
-import "concept2.x86cputalk";
+define SYS_WRITE equ 1;
+define STDOUT equ 1;
 
-define STDOUT 1;
+local message db "Hello, world!", 10;
+define len equ $ - message;
 
-$message
-    db "Hello, world!", 10
-    db "World, hello!", 10, 0;
+local write(rdi, rsi, rdx) {
+    mov rax = SYS_WRITE;
+    syscall;
+}
 
 pub _start() {
-    call writef(STDOUT, message);
+    call write(STDOUT, message, len);
 }

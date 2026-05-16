@@ -7,6 +7,7 @@ extern exit
 extern writef
 extern fopen_w
 extern close
+extern init_malloc
 
 section .text
     _start:
@@ -27,6 +28,9 @@ section .text
         pop rax
         mov [output], rax
 
+        f_init_malloc 200
+
+        push rax
         mov rax, [output]
         push rax
         mov rax, [input]
@@ -55,4 +59,4 @@ section .data
         db "   elf32.exe - elf32 linux program", 10, 0
 
     teststr db "bytes=%int%", 10, 0
-    msg db "format=%str% input=%str% output=%str%", 10, 0
+    msg db "format=%str% input=%str% output=%str% init_malloc=%ptr%", 10, 0
