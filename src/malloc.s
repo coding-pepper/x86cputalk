@@ -19,8 +19,10 @@ section .text
         add rdi, rax
         call brk
 
+        mov [malloc_entries_ptr], rax
         ret
 
+    ; malloc(size=rdi) address=rax
     malloc:
         ret
 
