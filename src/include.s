@@ -1,3 +1,4 @@
+SYS_READ equ 0
 SYS_WRITE equ 1
 SYS_OPEN equ 2
 SYS_BRK equ 12

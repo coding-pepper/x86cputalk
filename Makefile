@@ -33,4 +33,4 @@ clean:
 build: dist/x86cputalk
 
 run: dist/x86cputalk
-	./dist/x86cputalk x86.raw ex/dev.x86cputalk dist/dev.o
+	./dist/x86cputalk ex/concept.ct dist/dev.o

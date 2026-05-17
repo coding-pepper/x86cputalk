@@ -1,8 +1,11 @@
-define SYS_WRITE equ 1;
-define STDOUT equ 1;
+%bits 64;
+%output-format raw;
+
+%define SYS_WRITE equ 1;
+%define STDOUT equ 1;
 
 local message db "Hello, world!", 10;
-define len equ $ - message;
+%define len equ $ - message;
 
 local write(rdi, rsi, rdx) {
     mov rax = SYS_WRITE;
