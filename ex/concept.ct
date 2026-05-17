@@ -1,17 +1,42 @@
-%bits 64;
-%output-format raw;
+bits 64
+format elf64
 
-%define SYS_WRITE equ 1;
-%define STDOUT equ 1;
+SYS_WRITE equ 1;
+SYS_EXIT equ 60;
+STDOUT equ 1;
 
-local message db "Hello, world!", 10;
-%define len equ $ - message;
+section .data
+    message { db "Hello, world!", 10, 0; }
+    message_len equ $ - message;
 
-local write(rdi, rsi, rdx) {
-    mov rax = SYS_WRITE;
-    syscall;
-}
+section .text
+    invoke_syscall(rax, rdi, rsi, rdx) {
+        syscall;
+        ret;
+    }
 
-pub _start() {
-    call write(STDOUT, message, len);
-}
+    puts(str rsi, len rdx) {
+        call invoke_syscall(SYS_WRITE, STDOUT, _, _);
+        ret;
+    }
+
+    exit(code rdi) {
+        call invoke_syscall(SYS_EXIT, _, _, _);
+        ret;
+    }
+
+    _start {
+        mov r10, 0;
+        # _ means begin of the current label
+        # __ means end of the current label
+        _ {
+            call puts(message, message_len);
+            inc r10;
+            cmp r10, 6;
+            je __;
+            jmp _;
+        }
+        
+        call exit(0);
+        ret;
+    }

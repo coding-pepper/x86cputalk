@@ -1,0 +1,25 @@
+{
+  "name": "x86cputalk",
+  "displayName": "x86cputalk",
+  "description": "syntax highlighting for x86cputalk",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.120.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "x86cputalk",
+      "aliases": ["x86cputalk", "x86cputalk"],
+      "extensions": [".ct"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "x86cputalk",
+      "scopeName": "source.x86cputalk",
+      "path": "./syntaxes/x86cputalk.tmLanguage.json"
+    }]
+  }
+}
